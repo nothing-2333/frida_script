@@ -35,4 +35,4 @@ function print_memory(address) {
     }));
 }
 
-export { log, print_stack, print_memory}
+module.exports = { log, print_stack, print_memory };

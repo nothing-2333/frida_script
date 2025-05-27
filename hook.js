@@ -1,4 +1,4 @@
-import { log, print_stack, print_memory} from "./common"
+const { log, print_stack, print_memory } = require("./common");
 
 Java.perform(function() {
     let PMMReport = Java.use("com.xunmeng.pinduoduo.pmm.PMMReport");
