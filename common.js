@@ -1,5 +1,3 @@
-# log
-```js
 function log(label, content)
 {
     if (Array.isArray(content))
@@ -11,10 +9,8 @@ function log(label, content)
     }
     else console.log(`[${label}] ${content}`)
 }
-```
-# stack
-```js
-function printStack(name) {
+
+function print_stack(name) {
     Java.perform(function () {
         var Exception = Java.use("java.lang.Exception");
         var ins = Exception.$new("Exception");
@@ -29,10 +25,8 @@ function printStack(name) {
         }
     });
 }
-```
-# memory
-```js
-function printMemory(address) {
+
+function print_memory(address) {
     console.log(hexdump(address, {
         offset: 0,
         length: 64,
@@ -40,4 +34,5 @@ function printMemory(address) {
         ansi: true,
     }));
 }
-```
+
+export { log, print_stack, print_memory}

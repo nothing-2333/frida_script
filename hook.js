@@ -1,3 +1,5 @@
+import { log, print_stack, print_memory} from "./common"
+
 Java.perform(function() {
     let PMMReport = Java.use("com.xunmeng.pinduoduo.pmm.PMMReport");
     PMMReport["b"].overload('com.xunmeng.core.d.a.a.a.b', 'boolean').implementation = function (bVar, z) {
