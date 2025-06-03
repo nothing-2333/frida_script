@@ -16,7 +16,7 @@ function hook_dlopen()
                 let pathptr = args[0];
                 if (pathptr !== undefined && pathptr != null) {
                     this.path = ptr(pathptr).readCString();
-                    log("Load", this.path);
+                    log("dlopen", this.path);
                 }
             },
             onLeave(ret) {
@@ -49,7 +49,7 @@ function hook_android_dlopen_ext()
                 let pathptr = args[0];
                 if (pathptr !== undefined && pathptr != null) {
                     this.path = ptr(pathptr).readCString();
-                    log("Load", this.path);
+                    log("android_dlopen_ext", this.path);
                 }
             },
             onLeave(ret) {
@@ -70,13 +70,14 @@ Java 中用于加载动态库（.so 文件）的方法
 
 ### hook 示例
 ```js
-Java.perform(function () {
+function hook_system_loadLibrary()
+{
     const System = Java.use('java.lang.System');
     const Runtime = Java.use('java.lang.Runtime');
     const VMStack = Java.use('dalvik.system.VMStack');
 
     System.loadLibrary.implementation = function (library) {
-        log("Load", library);
+        log("System.loadLibrary", library);
 
 
         // 调用原始的 loadLibrary 方法
@@ -86,7 +87,7 @@ Java.perform(function () {
 
         return loaded;
     };
-});
+}
 ```
 
 ## 所有的实现都是调用了 Linux 的 api, 如

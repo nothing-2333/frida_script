@@ -2,10 +2,10 @@
 let pthread_creat_addr = Module.findExportByName("libc.so", "pthread_create")
 Interceptor.attach(pthread_creat_addr, {
     onEnter(args){
-        console.log("call pthread_create...")
+        console.log("pthread_create 被调用")
         let func_addr = args[2]
-        console.log("The thread function address is " + func_addr)
-        console.log('pthread_create called from:\n' 
+        console.log("函数地址: " + func_addr)
+        console.log('堆栈:\n' 
         + Thread.backtrace(this.context, Backtracer.ACCURATE).map(DebugSymbol.fromAddress).join('\n')
         + '\n'
         );

@@ -1,22 +1,28 @@
 # 主动调用 jni
+
 ## 使用 frida 封装的函数来调用 jni
+
 ### 主动调用 jstr转cstr
 ```js
 let env = Java.vm.tryGetEnv()
 let cstr = env.getStringUtfChars(jstr)
 console.log(cstr.readCString())
 ```
+
 ### 主动调用 cstr转jstr
 ```js
 let env = Java.vm.tryGetEnv()
 let jstr = env.newStringUtf('bbs.125.la') 
 ret.replace(jstr)
 ```
+
 ## NativeFunction 方式主动调用
 ```js
 
 ```
+
 # hook jni
+
 ## 动态绑定
 ```js
 function hook_RegisterNatives() {

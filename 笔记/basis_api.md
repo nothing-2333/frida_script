@@ -10,6 +10,7 @@ Java.perform(function () {
     }
 })
 ```
+
 ## 查找实例
 ```js
 Java.performNow(function() {
@@ -21,13 +22,13 @@ Java.performNow(function() {
     });
 });
 ```
+
 ## hook 构造函数
 ```js
 Java.perform(function() {
     let class_reference = Java.use('');
     class_reference.$init.implementation = function(){
         console.log("Hook Start");
-
 
     }
 });

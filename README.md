@@ -6,7 +6,18 @@
 adb shell dumpsys window | findstr mCurrentFocus
 ```
 
+## webpack 打包
+```bash
+npx webpack
+```
+
 ## frida
 ```bash
-frida -U -f com.example.android -l hook.js
+frida -U -f com.ss.android.ugc.aweme -l hook.js
+```
+
+## 二合一
+```bash
+# windows
+npx webpack; frida -U -f com.ss.android.ugc.aweme -l hook.js 
 ```
