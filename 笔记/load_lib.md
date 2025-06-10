@@ -17,13 +17,15 @@ function hook_dlopen()
                 if (pathptr !== undefined && pathptr != null) {
                     this.path = ptr(pathptr).readCString();
                     log("dlopen", this.path);
+                    if (this.path.endsWith("libttboringssl.so"))
+                    {
+                        // 延迟加载
+                        setTimeout(hook_libttboringssl, 0); 
+                    }
                 }
             },
             onLeave(ret) {
-                if (this.path.endsWith("libmatch03.so"))
-                {
-                    // 在这里添加更多逻辑
-                }
+
             }
         });
     } else {
@@ -50,13 +52,15 @@ function hook_android_dlopen_ext()
                 if (pathptr !== undefined && pathptr != null) {
                     this.path = ptr(pathptr).readCString();
                     log("android_dlopen_ext", this.path);
+                    if (this.path.endsWith("libttboringssl.so"))
+                    {
+                        // 延迟加载
+                        setTimeout(hook_libttboringssl, 0); 
+                    }
                 }
             },
             onLeave(ret) {
-                if (this.path.endsWith("libmatch03.so"))
-                {
-                    // 在这里添加更多逻辑
-                }
+
             }
         });
     } else {
@@ -81,9 +85,7 @@ function hook_system_loadLibrary()
 
 
         // 调用原始的 loadLibrary 方法
-        const loaded = Runtime.getRuntime().loadLibrary0(VMStack.getCallingClassLoader(), library);
-
-        // 在这里可以添加更多逻辑
+        const loaded = Runtime.getRuntime().loadLibrary(VMStack.getCallingClassLoader(), library);
 
         return loaded;
     };

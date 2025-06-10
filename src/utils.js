@@ -32,8 +32,4 @@ function print_memory(address) {
     }));
 }
 
-let a = [0x7c109dd334,0x7c109dd334,0x7c109dd334]
-console.log(a.includes(0x7c109dd334));
-
-
 module.exports = { log, print_stack, print_memory };
