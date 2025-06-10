@@ -12,7 +12,18 @@ let target_address = Module.getExportByName('libfrida0xb.so', 'func_name');
 
 # 获取 so 基址
 ```js
-Module.getBaseAddress("libmatch02.so").add(0x55)
+Module.getBaseAddress("libmatch02.so")
+```
+
+# 内存地址加减
+```js
+ptr(address).add(0x55)
+ptr(address).sub(0x55)
+```
+
+# 根据内存地址获取 module 名
+```js
+Process.findModuleByAddress(address)
 ```
 
 # hook function
