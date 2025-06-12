@@ -20,7 +20,7 @@ function hook_dlopen()
                     if (this.path.endsWith("libttboringssl.so"))
                     {
                         // 延迟加载
-                        setTimeout(hook_libttboringssl, 0); 
+                        setTimeout(func, 10); 
                     }
                 }
             },
@@ -55,7 +55,7 @@ function hook_android_dlopen_ext()
                     if (this.path.endsWith("libttboringssl.so"))
                     {
                         // 延迟加载
-                        setTimeout(hook_libttboringssl, 0); 
+                        setTimeout(func, 10); 
                     }
                 }
             },

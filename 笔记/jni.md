@@ -16,11 +16,6 @@ let jstr = env.newStringUtf('bbs.125.la')
 ret.replace(jstr)
 ```
 
-## NativeFunction 方式主动调用
-```js
-
-```
-
 # hook jni
 
 ## 动态绑定

@@ -1,5 +1,9 @@
 # frida_script
 
+frida 中文手册: https://frida.ivory.cafe/
+
+frida 官网: https://frida.re/docs/home/
+
 ## adb
 ```bash
 # 在 Android 设备上获取当前焦点窗口信息的命令
