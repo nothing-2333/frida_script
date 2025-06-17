@@ -27,7 +27,7 @@ ptr(address).add(0x55)
 ptr(address).sub(0x55)
 ```
 
-
+## hook
 
 ### hook function
 ```js
@@ -38,6 +38,25 @@ Interceptor.attach(target_address, {
     onLeave: function (ret) {
 
     }
+});
+```
+
+### 内联 hook: 在执行到该地址时触发回调函数
+```js
+// 设置内联 hook
+Instruction.setCallback(address, function(context) {
+    console.log(`[+] address at: ${address}`);
+    
+    // 读取寄存器 (ARM64)
+    console.log(`X0 = ${context.x0.toInt32()}`);  // 整数值
+    console.log(`X1 = ${context.x1}`);            // 指针地址
+    
+    // 读取X1寄存器指向的内存（字符串示例）
+    const memContent = Memory.readUtf8String(context.x1);
+    console.log(`X1指向的字符串: ${memContent}`);
+    
+    // 修改寄存器
+    context.x0 = ptr(0x999); 
 });
 ```
 
