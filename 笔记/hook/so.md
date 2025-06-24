@@ -10,6 +10,14 @@ let target_address = Module.getExportByName('libfrida0xb.so', 'func_name');
 // 根据 so 名字获取地址
 Module.getBaseAddress(name)
 Module.findBaseAddress(name)
+
+// 从地址读取字符串
+Memory.readCString(address)
+Memory.readUtf8String(address)
+ptr(address).readCString()
+
+// 内存提权
+Memory.protect(address, size, protection);
 ```
 
 ## Process
@@ -77,15 +85,4 @@ try {
 }
 ```
 
-## pointer to string
-```js
-Memory.readCString(address)
-Memory.readUtf8String(address)
-ptr(address).readCString()
-```
-
-## 内存提权
-```js
-Memory.protect(address, size, protection);
-```
 

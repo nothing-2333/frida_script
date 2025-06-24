@@ -4,6 +4,32 @@ Java.perform(() => {
     hook_RegisterNatives()
 });
 
+function hook_main()
+{
+    const base = Module.getBaseAddress("libmtguard.so");
+    const targetFunc = base.add(0x2B0AC); 
+
+    console.log(targetFunc);
+    const ObjectArrayClass = Java.use("[Ljava.lang.Object;");
+    console.log(ObjectArrayClass);
+    
+    Interceptor.attach(targetFunc, {
+        onEnter(args) {
+            console.log("状态码: ", args[0].toInt32());
+            let obj = args[1];
+            try {
+                obj = Java.cast(obj, ObjectArrayClass);
+                console.log(obj, JSON.stringify(obj))
+            } catch (error) {
+                console.log(error);
+            }
+        },
+        onLeave(retval) {
+            console.log("返回值: ", retval, JSON.stringify(retval));
+        }
+    });
+}
+
 function hook_RegisterNatives() {
     let symbols = Module.enumerateSymbolsSync("libart.so");
     let addrRegisterNatives = null;
