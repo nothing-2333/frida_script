@@ -17,11 +17,11 @@ npx webpack
 
 ## frida
 ```bash
-frida -U -f com.ss.android.ugc.aweme -l hook.js
+frida -U -f com.ss.android.ugc.aweme -l hook.js --debug
 ```
 
 ## 二合一
 ```bash
 # windows
-npx webpack; frida -U -f com.ss.android.ugc.aweme -l hook.js 
+npx webpack; frida -U -f com.sankuai.meituan -l hook.js --debug
 ```

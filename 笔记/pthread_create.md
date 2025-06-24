@@ -1,3 +1,6 @@
+## 线程创建
+hook `libc.so` 中的 `pthread_create` 函数
+
 ```js
 let pthread_creat_addr = Module.findExportByName("libc.so", "pthread_create")
 Interceptor.attach(pthread_creat_addr, {

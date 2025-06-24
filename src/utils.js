@@ -23,10 +23,10 @@ function print_stack(name) {
     });
 }
 
-function print_memory(address) {
+function print_memory(address, length=64) {
     console.log(hexdump(address, {
         offset: 0,
-        length: 64,
+        length: length,
         header: true,
         ansi: true,
     }));
