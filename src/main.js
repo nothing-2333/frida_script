@@ -1,80 +1,62 @@
 const { log, print_stack, print_memory } = require("./utils");
 
 Java.perform(() => {
-    hook_RegisterNatives()
+    hook_android_dlopen_ext()
 });
 
-function hook_main()
+function hook_android_dlopen_ext()
 {
-    const base = Module.getBaseAddress("libmtguard.so");
-    const targetFunc = base.add(0x2B0AC); 
-
-    console.log(targetFunc);
-    const ObjectArrayClass = Java.use("[Ljava.lang.Object;");
-    console.log(ObjectArrayClass);
-    
-    Interceptor.attach(targetFunc, {
-        onEnter(args) {
-            console.log("状态码: ", args[0].toInt32());
-            let obj = args[1];
-            try {
-                obj = Java.cast(obj, ObjectArrayClass);
-                console.log(obj, JSON.stringify(obj))
-            } catch (error) {
-                console.log(error);
-            }
-        },
-        onLeave(retval) {
-            console.log("返回值: ", retval, JSON.stringify(retval));
-        }
-    });
-}
-
-function hook_RegisterNatives() {
-    let symbols = Module.enumerateSymbolsSync("libart.so");
-    let addrRegisterNatives = null;
-    for (let i = 0; i < symbols.length; i++) {
-        let symbol = symbols[i];
-        if (symbol.name.indexOf("art") >= 0 &&
-                symbol.name.indexOf("JNI") >= 0 && 
-                symbol.name.indexOf("RegisterNatives") >= 0 && 
-                symbol.name.indexOf("CheckJNI") < 0) {
-            addrRegisterNatives = symbol.address;
-        }
-    }
-
-    if (addrRegisterNatives != null) {
-        Interceptor.attach(addrRegisterNatives, {
-            onEnter: function (args) {
-                log("RegisterNatives", "method_count: ", args[3]);
-                let env = args[0];
-                let java_class = args[1];
-                let class_name = Java.vm.tryGetEnv().getClassName(java_class);
-
-                let methods_ptr = ptr(args[2]);
-
-                let method_count = parseInt(args[3]);
-                for (let i = 0; i < method_count; i++) {
-                    let name_ptr = Memory.readPointer(methods_ptr.add(i * Process.pointerSize * 3));
-                    let sig_ptr = Memory.readPointer(methods_ptr.add(i * Process.pointerSize * 3 + Process.pointerSize));
-                    let fnPtr_ptr = Memory.readPointer(methods_ptr.add(i * Process.pointerSize * 3 + Process.pointerSize * 2));
-
-                    let name = Memory.readCString(name_ptr);
-                    let sig = Memory.readCString(sig_ptr);
-                    let find_module = Process.findModuleByAddress(fnPtr_ptr);
-                    log("RegisterNatives", [
-                        "java_class: " + class_name,
-                        "name: " + name,
-                        "sig: " + sig, 
-                        "fnPtr: " + fnPtr_ptr, 
-                        "module_name: " + find_module.name, 
-                        "module_base: " + find_module.base, 
-                        "offset: " + ptr(fnPtr_ptr).sub(find_module.base),
-                    ]);
-                    console.log("")
+    let android_dlopen_ext_func_addr = Module.findExportByName(null, "android_dlopen_ext");
+    if (android_dlopen_ext_func_addr) {
+        Interceptor.attach(android_dlopen_ext_func_addr, {
+            onEnter(args) {
+                let pathptr = args[0];
+                if (pathptr !== undefined && pathptr != null) {
+                    this.path = ptr(pathptr).readCString();
+                    log("android_dlopen_ext", this.path);
+                    if (this.path.endsWith("libmtguard.so"))
+                    {
+                        setTimeout(hook_libmtguard_main_rerutn, 10); 
+                    }
                 }
-                
+            },
+            onLeave(ret) {
+
             }
         });
+    } else {
+        log("android_dlopen_ext not found");
     }
+}
+function hook_libmtguard_main_rerutn() {
+    let libmtguard_base = Module.getBaseAddress("libmtguard.so");
+    if (!libmtguard_base) {
+        console.error("[-] libmtguard.so not loaded yet");
+        return;
+    }
+    
+    let target_address = libmtguard_base.add(0x26038);
+    console.log("[+] Hooking function at: " + target_address);
+    Interceptor.attach(target_address, {
+        onEnter: function (args) {
+            // 获取 JNIEnv 指针
+            let env = Java.vm.getEnv();
+            
+            // 直接使用 x20 寄存器的值作为 jobject 指针
+            let objArrayPtr = ptr(this.context.x20);
+            
+            // 获取数组长度
+            let length = env.getArrayLength(objArrayPtr);
+            console.log("[+] Object array length: " + length);
+            
+            for (let i = 0; i < length; i++)
+            {
+                let elementPtr = env.getObjectArrayElement(objArrayPtr, i);
+                let javaObject = Java.cast(elementPtr, Java.use('java.lang.Object')); 
+                let className = javaObject.getClass().getName(); 
+                console.log(`对象类型: ${className}`, javaObject.toString());
+            }
+
+        },
+    });
 }

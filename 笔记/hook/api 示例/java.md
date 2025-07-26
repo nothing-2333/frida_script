@@ -42,16 +42,9 @@ Java.perform(function() {
 })
 ```
 
-## jstr 转 cstr
+## 根据对象指针获取它的类名
 ```js
-let env = Java.vm.tryGetEnv()
-let cstr = env.getStringUtfChars(jstr)
-console.log(cstr.readCString())
-```
-
-## cstr 转 jstr
-```js
-let env = Java.vm.tryGetEnv()
-let jstr = env.newStringUtf('bbs.125.la') 
-ret.replace(jstr)
+let javaObject = Java.cast(elementPtr, Java.use('java.lang.Object')); 
+let className = javaObject.getClass().getName(); 
+console.log(`对象类型: ${className}`);
 ```
