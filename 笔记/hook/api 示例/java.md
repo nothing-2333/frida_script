@@ -16,7 +16,16 @@ Java.perform(function() {
     let class_reference = Java.use('');
     class_reference.$init.implementation = function(){
         console.log("Hook Start");
-
+            
+    }
+});
+```
+```js
+Java.perform(function() {
+    let class_reference = Java.use('');
+    class_reference.$init.overload("java.lang.String", "java.util.List").implementation = function(){
+        console.log("Hook Start");
+            
     }
 });
 ```

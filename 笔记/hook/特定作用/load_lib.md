@@ -16,16 +16,14 @@ function hook_dlopen()
                 let pathptr = args[0];
                 if (pathptr !== undefined && pathptr != null) {
                     this.path = ptr(pathptr).readCString();
-                    log("dlopen", this.path);
-                    if (this.path.endsWith("libttboringssl.so"))
-                    {
-                        // 延迟加载
-                        setTimeout(func, 10); 
-                    }
+                    log("android_dlopen_ext", this.path);
                 }
             },
             onLeave(ret) {
-
+                if (this.path.endsWith("librust_wynd_proxy.so"))
+                {
+                    hook_address()
+                }
             }
         });
     } else {
@@ -52,15 +50,13 @@ function hook_android_dlopen_ext()
                 if (pathptr !== undefined && pathptr != null) {
                     this.path = ptr(pathptr).readCString();
                     log("android_dlopen_ext", this.path);
-                    if (this.path.endsWith("libttboringssl.so"))
-                    {
-                        // 延迟加载
-                        setTimeout(func, 10); 
-                    }
                 }
             },
             onLeave(ret) {
-
+                if (this.path.endsWith("librust_wynd_proxy.so"))
+                {
+                    hook_address()
+                }
             }
         });
     } else {
